@@ -7,25 +7,26 @@ import os
 from datetime import datetime, timedelta
 from pydantic import BaseModel, Field
 from dotenv import load_dotenv
+from rich import print as rprint
 
 
 class Movie(BaseModel):
     title: str = Field(description="电影名称")
     director: str = Field(description="导演", max_length=20, min_length=1)
-    actors: dict[str, str] = Field(description="演员表", max_length=100, min_length=1)
+    actors: dict[str, str] = Field(description="演员表[角色姓名：演员姓名]", max_length=100, min_length=1)
     genre: str = Field(description="类型", default=None)
     release_date: datetime = Field(description="上映日期")
-    duration: timedelta = Field(description="时长", default=None)
+    duration: timedelta | None = Field(description="时长", default=None)
     description: str = Field(description="情节描述", min_length=100)
-    imdb_rating: float = Field(description="IMDb评分", default=None)
-    meta_score: float = Field(description="meta评分", default=None)
+    imdb_rating: float | None = Field(description="IMDb评分", default=None)
+    meta_score: float | None = Field(description="meta评分", default=None)
 
 
 def main():
     load_dotenv(dotenv_path='.env')
 
     # 1. 初始化组件
-    web_search = TavilySearch(max_results=2, api_key=os.getenv("TAVILY_API_KEY"))
+    web_search = TavilySearch(max_results=4, api_key=os.getenv("TAVILY_API_KEY"))
     model = init_chat_model(
         api_key=os.getenv("DEEPSEEK_API_KEY"),
         model="deepseek-v4-pro",
@@ -74,7 +75,7 @@ def main():
     print(res)
     print("===" * 100,'\n', type(res))
     json_res = res.model_dump_json()
-    print("===" * 100,'\n', json_res)
+    rprint("===" * 100,'\n', json_res)
     print("--------" * 100, '\n',type(json_res))
 if __name__ == "__main__":
     main()
