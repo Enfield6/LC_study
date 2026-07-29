@@ -30,7 +30,7 @@ for chunk in res:
     print(chunk.content, end= '', flush= True)
     full_text += chunk.content
 
-print("\n \n ✅✅✅ 完整的内容：\n", full_text, end= "\n")
+print("\n \n完整的内容：\n", full_text, end= "\n")
 
 
 
